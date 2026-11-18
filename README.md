@@ -1,5 +1,9 @@
 # Zero Buster
 
+<p align="center">
+  <img src="screenshots/main_menu.png" alt="Zero Buster Main Menu" width="400"/>
+</p>
+
 Herramienta avanzada de auditoría de seguridad y simulación de adversarios para **Flipper Zero** que implementa un vector de ataque **BadUSB bidireccional (Duplex)** con exfiltración local a través de emulación serie **USB CDC**, eliminando por completo la dependencia de interfaces de red, conexiones a Internet o servidores C2 externos.
 
 La aplicación permite la inyección automatizada de comandos mediante emulación de teclado (HID) con traducción nativa para distribuciones internacionales (ISO Español y ANSI US), conmutando dinámicamente el bus USB a un puerto serie virtual para capturar telemetría de diagnóstico, credenciales de red y ficheros directamente en la tarjeta MicroSD. Incorpora además capacidades avanzadas de **suplantación de identidad de hardware (USB Spoofing)** en caliente para evadir sistemas EDR y políticas de control de periféricos basadas en listas blancas de dispositivos.
