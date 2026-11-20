@@ -29,12 +29,13 @@ bool zero_buster_scene_main_on_event(ZeroBusterApp* app, InputEvent* event) {
                 } else {
                     app->payloads.selected_index = app->payloads.count - 1;
                 }
-            } else if(app->active_row == Setting_Layout) {
-                if(app->layout > 0) {
-                    app->layout--;
+            } else if(app->active_row == Setting_Layout && app->layouts.count > 0) {
+                if(app->layouts.selected_index > 0) {
+                    app->layouts.selected_index--;
                 } else {
-                    app->layout = Layout_Count - 1;
+                    app->layouts.selected_index = app->layouts.count - 1;
                 }
+                load_layout(app, app->layouts.names[app->layouts.selected_index]);
             } else if(app->active_row == Setting_Spoof) {
                 if(app->spoof_profile > 0) {
                     app->spoof_profile--;
@@ -49,8 +50,10 @@ bool zero_buster_scene_main_on_event(ZeroBusterApp* app, InputEvent* event) {
             if(app->active_row == Setting_Payload && app->payloads.count > 0) {
                 app->payloads.selected_index =
                     (app->payloads.selected_index + 1) % app->payloads.count;
-            } else if(app->active_row == Setting_Layout) {
-                app->layout = (app->layout + 1) % Layout_Count;
+            } else if(app->active_row == Setting_Layout && app->layouts.count > 0) {
+                app->layouts.selected_index =
+                    (app->layouts.selected_index + 1) % app->layouts.count;
+                load_layout(app, app->layouts.names[app->layouts.selected_index]);
             } else if(app->active_row == Setting_Spoof) {
                 app->spoof_profile = (app->spoof_profile + 1) % Spoof_Count;
                 if(app->spoof_profile == Spoof_Custom) {

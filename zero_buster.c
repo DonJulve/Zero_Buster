@@ -6,7 +6,6 @@ int32_t zero_buster_app(void* p) {
     ZeroBusterApp* app = malloc(sizeof(ZeroBusterApp));
     memset(app, 0, sizeof(ZeroBusterApp));
 
-    app->layout = Layout_ES; // Default to Spanish ISO keyboard
     app->spoof_profile = Spoof_Logitech_K120; // Default to Logitech K120
     app->active_row = Setting_Payload;
 
@@ -18,8 +17,9 @@ int32_t zero_buster_app(void* p) {
     // Take ownership of CLI VCP to handle USB CDC channel 0
     app->cli_vcp = furi_record_open(RECORD_CLI_VCP);
 
-    // Initial scan of payloads and custom HID from SD card
+    // Initial scan of payloads, layouts, and custom HID from SD card
     scan_payloads(app);
+    scan_layouts(app);
     load_custom_hid_config(app->storage, &app->custom_hid_cfg);
 
     // Save initial USB config to restore on exit

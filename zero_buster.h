@@ -5,22 +5,24 @@
 #include <furi_hal_usb.h>
 #include <furi_hal_usb_hid.h>
 #include <furi_hal_usb_cdc.h>
-#include <cli/cli_vcp.h>
 #include <gui/gui.h>
+#include <gui/view_port.h>
 #include <input/input.h>
-#include <storage/storage.h>
+#include <notification/notification.h>
 #include <notification/notification_messages.h>
+#include <storage/storage.h>
+#include <cli/cli_vcp.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #define TAG "ZeroBuster"
-#define APP_DATA_DIR EXT_PATH("zero_buster")
-#define LOOT_DIR EXT_PATH("zero_buster/loot")
-#define PAYLOAD_DIR EXT_PATH("zero_buster/payloads")
-#define CUSTOM_HID_FILE EXT_PATH("zero_buster/custom_hid.txt")
-#define INIT_MARKER_FILE EXT_PATH("zero_buster/.initialized")
+#define APP_DATA_DIR APP_DATA_PATH("")
+#define LOOT_DIR APP_DATA_PATH("loot")
+#define PAYLOAD_DIR APP_DATA_PATH("payloads")
+#define CUSTOM_HID_FILE APP_DATA_PATH("custom_hid.txt")
+#define BADUSB_LAYOUTS_DIR EXT_PATH("badusb/assets/layouts")
 #define EOF_MARKER "<<<EOF>>>"
 
 #define MAX_PAYLOADS 16
@@ -29,14 +31,15 @@ extern "C" {
 
 #define WORKER_FLAG_RX (1 << 0)
 
-/* Keyboard Layouts */
-typedef enum {
-    Layout_ES,
-    Layout_US,
-    Layout_Count,
-} KeyboardLayout;
+/* Keyboard Layouts (.kl files) */
+#define MAX_LAYOUTS 64
+#define MAX_LAYOUT_NAME_LEN 32
 
-extern const char* layout_names[];
+typedef struct {
+    char names[MAX_LAYOUTS][MAX_LAYOUT_NAME_LEN];
+    uint32_t count;
+    uint32_t selected_index;
+} LayoutList;
 
 /* Device Spoofing Profiles */
 typedef enum {
@@ -105,7 +108,8 @@ typedef struct ZeroBusterApp {
     uint8_t mfg_preset_idx;
     uint8_t prod_preset_idx;
 
-    KeyboardLayout layout;
+    LayoutList layouts;
+    uint16_t active_layout[128];
     SpoofProfile spoof_profile;
     FuriHalUsbHidConfig custom_hid_cfg;
     PayloadManager payloads;

@@ -15,6 +15,9 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
     canvas_set_color(canvas, ColorWhite);
     canvas_set_font(canvas, FontPrimary);
 
+    const char* l_name = (app->layouts.count > 0) ?
+        app->layouts.names[app->layouts.selected_index] : "en-US";
+
     if(app->state == State_Edit_HID) {
         canvas_draw_str(canvas, 3, 9, "HID Editor");
         canvas_set_font(canvas, FontSecondary);
@@ -26,8 +29,7 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
     } else {
         canvas_draw_str(canvas, 3, 9, "Zero Buster");
         canvas_set_font(canvas, FontSecondary);
-        canvas_draw_str_aligned(
-            canvas, 125, 9, AlignRight, AlignBottom, app->layout == Layout_ES ? "ES" : "US");
+        canvas_draw_str_aligned(canvas, 125, 9, AlignRight, AlignBottom, l_name);
     }
 
     canvas_set_color(canvas, ColorBlack);
@@ -56,7 +58,7 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
                 canvas_set_color(canvas, ColorWhite);
             }
             char l_buf[32];
-            snprintf(l_buf, sizeof(l_buf), "KEY: < %s >", layout_names[app->layout]);
+            snprintf(l_buf, sizeof(l_buf), "KEY: < %s >", l_name);
             canvas_draw_str(canvas, 4, 28, l_buf);
             canvas_set_color(canvas, ColorBlack);
 
@@ -87,14 +89,16 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
                 canvas_draw_rbox(canvas, 2, 48, 124, 9, 1);
                 canvas_set_color(canvas, ColorWhite);
             }
-            canvas_draw_str(canvas, 4, 55, "Info: [ Creditos / About > ]");
+            canvas_draw_str(canvas, 4, 55, "Info: [ Credits / About > ]");
             canvas_set_color(canvas, ColorBlack);
 
             // Footer (Informative only, not selectable)
             if(app->active_row == Setting_Edit_HID) {
-                canvas_draw_str_aligned(canvas, 64, 63, AlignCenter, AlignBottom, "[ OK = Editar Custom HID ]");
+                canvas_draw_str_aligned(canvas, 64, 63, AlignCenter, AlignBottom, "[ OK = Edit Custom HID ]");
             } else if(app->active_row == Setting_About) {
-                canvas_draw_str_aligned(canvas, 64, 63, AlignCenter, AlignBottom, "[ OK = Ver Creditos ]");
+                canvas_draw_str_aligned(canvas, 64, 63, AlignCenter, AlignBottom, "[ OK = View Credits ]");
+            } else if(app->payloads.count == 0) {
+                canvas_draw_str_aligned(canvas, 64, 63, AlignCenter, AlignBottom, "[ No Payloads Found ]");
             } else {
                 canvas_draw_str_aligned(canvas, 64, 63, AlignCenter, AlignBottom, "[ OK = Jack In! ]");
             }
@@ -117,7 +121,7 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
                 canvas_set_color(canvas, ColorWhite);
             }
             char l_buf[32];
-            snprintf(l_buf, sizeof(l_buf), "KEY: < %s >", layout_names[app->layout]);
+            snprintf(l_buf, sizeof(l_buf), "KEY: < %s >", l_name);
             canvas_draw_str(canvas, 4, 31, l_buf);
             canvas_set_color(canvas, ColorBlack);
 
@@ -136,12 +140,14 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
                 canvas_draw_rbox(canvas, 2, 43, 124, 10, 1);
                 canvas_set_color(canvas, ColorWhite);
             }
-            canvas_draw_str(canvas, 4, 51, "Info: [ Creditos / About > ]");
+            canvas_draw_str(canvas, 4, 51, "Info: [ Credits / About > ]");
             canvas_set_color(canvas, ColorBlack);
 
             // Footer (Informative only, not selectable)
             if(app->active_row == Setting_About) {
-                canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ OK = Ver Creditos ]");
+                canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ OK = View Credits ]");
+            } else if(app->payloads.count == 0) {
+                canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ No Payloads Found ]");
             } else {
                 canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ OK = Jack In! ]");
             }
@@ -153,10 +159,10 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
         canvas_set_font(canvas, FontPrimary);
         canvas_draw_str(canvas, 4, 23, "Zero Buster v1.1");
         canvas_set_font(canvas, FontSecondary);
-        canvas_draw_str(canvas, 4, 34, "Autor: Javier Julve");
+        canvas_draw_str(canvas, 4, 34, "Author: Javier Julve");
         canvas_draw_str(canvas, 4, 44, "GH: github.com/DonJulve");
         canvas_draw_str(canvas, 4, 53, "LI: in/javier-julve-yubero");
-        canvas_draw_str_aligned(canvas, 64, 63, AlignCenter, AlignBottom, "[ OK / Back = Volver ]");
+        canvas_draw_str_aligned(canvas, 64, 63, AlignCenter, AlignBottom, "[ OK / Back = Back ]");
         break;
 
     case State_Edit_HID: {
@@ -224,14 +230,14 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
         canvas_draw_str(canvas, 4, 53, prd_buf);
         canvas_set_color(canvas, ColorBlack);
 
-        // Bottom bar: Save & Back
+        // Bottom bar: Save & Exit
         if(app->edit_cursor == 10) {
             canvas_draw_rbox(canvas, 16, 54, 96, 10, 2);
             canvas_set_color(canvas, ColorWhite);
             canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ SAVE & EXIT ]");
             canvas_set_color(canvas, ColorBlack);
         } else {
-            canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ Back = Guardar ]");
+            canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ Back = Save & Exit ]");
         }
         break;
     }
@@ -246,7 +252,7 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
         } else {
             canvas_draw_str(canvas, 4, 50, spoof_names[app->spoof_profile]);
         }
-        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ Back = Cancelar ]");
+        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ Back = Cancel ]");
         break;
 
     case State_Injecting:
@@ -254,8 +260,8 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
         canvas_draw_str(canvas, 4, 26, "Jack In! Transmitting...");
         canvas_set_font(canvas, FontSecondary);
         canvas_draw_str(canvas, 4, 40, "Layout Active:");
-        canvas_draw_str(canvas, 4, 50, layout_names[app->layout]);
-        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ Back = Cancelar ]");
+        canvas_draw_str(canvas, 4, 50, l_name);
+        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ Back = Cancel ]");
         break;
 
     case State_Switching_CDC:
@@ -263,7 +269,7 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
         canvas_draw_str(canvas, 4, 26, "Switching to CDC...");
         canvas_set_font(canvas, FontSecondary);
         canvas_draw_str(canvas, 4, 42, "Awaiting host serial COM");
-        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ Back = Cancelar ]");
+        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ Back = Cancel ]");
         break;
 
     case State_Receiving: {
@@ -279,7 +285,7 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
         uint8_t progress = (app->bytes_received / 8) % 116;
         canvas_draw_box(canvas, 6, 43, progress, 5);
 
-        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ Back = Cancelar ]");
+        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ Back = Cancel ]");
         break;
     }
 
@@ -299,7 +305,7 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
         snprintf(file_lbl, sizeof(file_lbl), "File: %s", fname);
         canvas_draw_str(canvas, 4, 48, file_lbl);
 
-        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ OK / Back = Salir ]");
+        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ OK / Back = Exit ]");
         break;
     }
 
@@ -309,7 +315,7 @@ void zero_buster_view_draw_callback(Canvas* canvas, void* context) {
 
         canvas_set_font(canvas, FontSecondary);
         canvas_draw_str(canvas, 4, 38, app->error_msg);
-        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ OK / Back = Salir ]");
+        canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, "[ OK / Back = Exit ]");
         break;
     }
 
@@ -321,4 +327,3 @@ void zero_buster_view_input_callback(InputEvent* input_event, void* context) {
     ZeroBusterApp* app = context;
     furi_message_queue_put(app->event_queue, input_event, FuriWaitForever);
 }
-

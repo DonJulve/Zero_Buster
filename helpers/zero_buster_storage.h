@@ -12,16 +12,21 @@ void save_custom_hid_config(Storage* storage, const FuriHalUsbHidConfig* cfg);
 /* Load or generate default Custom HID config from MicroSD */
 void load_custom_hid_config(Storage* storage, FuriHalUsbHidConfig* cfg);
 
-/* Ensure default demonstration payloads exist on MicroSD and are up to date */
-void ensure_default_payloads(Storage* storage);
+/* Ensure required directories exist on MicroSD under apps_data */
+void ensure_storage_dirs(Storage* storage);
 
-/* Scan /ext/zero_buster/payloads for available files */
+/* Scan /ext/apps_data/zero_buster/payloads for available files */
 void scan_payloads(ZeroBusterApp* app);
 
-/* Generate next incremental loot filepath in /ext/zero_buster/loot/ */
+/* Scan /ext/badusb/assets/layouts for available .kl files */
+void scan_layouts(ZeroBusterApp* app);
+
+/* Load a .kl layout file or fallback to built-in en-US hid_asciimap */
+bool load_layout(ZeroBusterApp* app, const char* layout_name);
+
+/* Generate next incremental loot filepath in /ext/apps_data/zero_buster/loot/ */
 void get_next_loot_filepath(Storage* storage, char* out_path, size_t max_len);
 
 #ifdef __cplusplus
 }
 #endif
-

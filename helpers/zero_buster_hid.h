@@ -6,13 +6,13 @@
 extern "C" {
 #endif
 
-/* Type a single character through USB HID taking layout into account */
-void zero_buster_type_char(char c, KeyboardLayout layout, uint32_t delay_ms);
+/* Type a single character through USB HID taking active .kl layout into account */
+void zero_buster_type_char(char c, const uint16_t* layout, uint32_t delay_ms);
 
 /* Type an entire string through USB HID */
 void zero_buster_type_string(
     const char* str,
-    KeyboardLayout layout,
+    const uint16_t* layout,
     uint32_t delay_ms,
     volatile bool* stop_flag);
 
@@ -23,4 +23,3 @@ uint32_t set_hex_nibble(uint32_t val, uint8_t nibble_idx, uint8_t new_nibble);
 #ifdef __cplusplus
 }
 #endif
-

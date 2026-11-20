@@ -146,7 +146,7 @@ int32_t zero_buster_worker_thread(void* context) {
         }
 
         // Open Powershell (console window with keyboard focus, bypassing Run dialog length limit)
-        zero_buster_type_string("powershell -NoP", app->layout, 12, &app->worker_stop);
+        zero_buster_type_string("powershell -NoP", app->active_layout, 12, &app->worker_stop);
         furi_delay_ms(50);
         furi_hal_hid_kb_press(HID_KEYBOARD_RETURN);
         furi_delay_ms(50);
@@ -160,7 +160,7 @@ int32_t zero_buster_worker_thread(void* context) {
         }
 
         // Type script content directly into the PowerShell prompt
-        zero_buster_type_string(payload_buf, app->layout, 12, &app->worker_stop);
+        zero_buster_type_string(payload_buf, app->active_layout, 12, &app->worker_stop);
         furi_delay_ms(50);
 
         if(app->worker_stop) {
@@ -186,7 +186,7 @@ int32_t zero_buster_worker_thread(void* context) {
         }
 
         // Type script content
-        zero_buster_type_string(payload_buf, app->layout, 12, &app->worker_stop);
+        zero_buster_type_string(payload_buf, app->active_layout, 12, &app->worker_stop);
         furi_delay_ms(50);
 
         if(app->worker_stop) {
